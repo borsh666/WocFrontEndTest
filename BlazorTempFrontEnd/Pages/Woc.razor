@@ -1,0 +1,49 @@
+﻿@page "/woc"
+@using BlazorTempFrontEnd.Models
+@using Microsoft.AspNetCore.Mvc.Rendering
+@using System.Text.RegularExpressions
+@using System.Data
+@inject IJSRuntime JS
+@inject NavigationManager NavigationManager
+
+<PageTitle>WOC</PageTitle>
+
+<EditForm Model="@reportInfo" class="row p-3" OnValidSubmit=@HandleValidSubmit>
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="col-md-12 mb-3">
+        <label for="Name">Enter SiteId:</label>
+        <InputText id="Name" @bind-Value="reportInfo.SiteId" class="form-control" />
+        <p />
+       
+
+    </div>
+    <label>
+        Report type:
+        <InputSelect @bind-Value="reportInfo.ReportType">
+            <option value=@ReportType.GSM>GSM</option>
+            <option value=@ReportType.GSM_GL>GSM_GL</option>
+            <option value=@ReportType.UMTS>UMTS</option>
+            <option value=@ReportType.LTE>LTE</option>
+            <option value=@ReportType.ALL>ALL</option>
+            <option value=@ReportType.ALL_GL>ALL_GL</option>
+        </InputSelect>
+    </label>
+    <div class="col-12 mb-3">
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+</EditForm>
+
+@code {
+    private ReportInfo reportInfo = new ReportInfo();
+
+    private async Task HandleValidSubmit()
+    {
+
+        var reportType = reportInfo.ReportType.ToString();
+
+        var url = $"https://localhost:44398/woc/{reportType}/{reportInfo.SiteId}";
+        NavigationManager.NavigateTo(url);
+    }
+}
